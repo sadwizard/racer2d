@@ -1,6 +1,9 @@
 var carImage = new Image();
 carImage.src = './car.png';
 
+var tileImageMap = new Image();
+tileImageMap.src = './tile-asphalt2.jpg';
+
 // function Vec(x, y) {
 //   this.x = x;
 //   this.y = y;
@@ -59,26 +62,26 @@ Player.prototype.update = function() {
   this.position.x += this.speed.x * Math.cos(angle);
   this.position.y += this.speed.y * Math.sin(angle);
   
-  // var out = -1;
-  // if (this.position.x >= window.innerWidth - 50) {
-  //   this.speed.x *= out;
-  //   this.speed.y *= out;
-  // }
+  var out = -0.8;
+  if (this.position.x >= 5000 - 100) {
+    this.speed.x *= out;
+    this.speed.y *= out;
+  }
   
-  // if (this.position.y >= window.innerHeight - 50) {
-  //   this.speed.x *= out;
-  //   this.speed.y *= out;
-  // }
+  if (this.position.y >= 5000 - 100) {
+    this.speed.x *= out;
+    this.speed.y *= out;
+  }
   
-  // if (this.position.x <= 50) {
-  //   this.speed.x *= out;
-  //   this.speed.y *= out;
-  // }
+  if (this.position.x <= 100) {
+    this.speed.x *= out;
+    this.speed.y *= out;
+  }
   
-  // if (this.position.y <=  50) {
-  //   this.speed.x *= out;
-  //   this.speed.y *= out;
-  // }
+  if (this.position.y <= 100) {
+    this.speed.x *= out;
+    this.speed.y *= out;
+  }
   
   
   var speedout = 0.05;
@@ -95,6 +98,22 @@ Player.prototype.update = function() {
 
 function MapObjects(amount) {
   this.objects = [];
+
+
+  this.objects.push({
+    draw: function() {
+      draw(0, 0, 0, function(ctx) {
+        // ctx.globalAlpha = 0.6;
+        // ctx.fillStyle = color;
+        // ctx.drawImage(tileImageMap, 0, 0, 5000, 5000);
+        // ctx.globalAlpha = 1;
+
+        var ptrn = ctx.createPattern(tileImageMap, 'repeat'); // Create a pattern with this image, and set it to "repeat".
+            ctx.fillStyle = ptrn;
+            ctx.fillRect(0, 0, 5000, 5000); 
+      });
+    }
+  });
 
   for(var i=0; i < amount; i++) {
     this.add();
@@ -117,7 +136,7 @@ MapObjects.prototype.add = function() {
         ctx.globalAlpha = 1;
       });
     }
-  })
+  });
 }
 
 MapObjects.prototype.draw = function () {
@@ -167,8 +186,8 @@ function keyHandle(e) {
 
 
 document.addEventListener('keyup', keyHandle);
-
 document.addEventListener('keydown', keyHandle);
+
 var maxCarAngle = 3;
 function engine() {
   ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
@@ -203,6 +222,12 @@ function engine() {
     //down
     player.speed.x -= 0.1;
     player.speed.y -= 0.1;
+  }
+
+  if (map[32]) {
+    //space
+    player.speed.x += 0.3;
+    player.speed.y += 0.3;
   }
 
   var cameraScale = player.speed.x * 0.1;
